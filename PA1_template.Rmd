@@ -7,14 +7,19 @@ output:
 
 
 ## Loading and preprocessing the data
+```{r}
 v_activity<-read.csv(file='activity.csv',header=T,na.strings='NA')
 v_activity$date<-as.Date(v_activity$date,'%Y-%m-%d')
+```
 
 ## What is mean total number of steps taken per day?
+```{r}
 v_steps_by_day<-aggregate(steps~date,v_activity,sum)
 hist(v_steps_by_day$steps)
+```
 
 ## What is the average daily activity pattern?
+```{r}
 aggregate(steps~date,v_activity,mean)
 aggregate(steps~date,v_activity,median)
 
@@ -24,9 +29,10 @@ with(v_steps_by_interval,plot.ts(interval,steps,type='l'))
 v_sorted_steps_by_interval<-v_steps_by_interval[order(v_steps_by_interval$steps,decreasing=T),]
 v_max_steps<-v_sorted_steps_by_interval[1,]$steps
 v_sorted_steps_by_interval[v_sorted_steps_by_interval$steps==v_max_steps,]
+```
 
 ## Imputing missing values
-
+```{r}
 v_activity$steps2<-v_activity$steps
 
 for(v_date in unique(v_activity[is.na(v_activity$steps2),]$date))
@@ -55,8 +61,10 @@ v_steps_by_day2<-aggregate(steps2~date,v_activity,median)
 
 with(v_steps_by_day,plot.ts(date,steps,type='l',main='Median With NA'))
 with(v_steps_by_day2,plot.ts(date,steps2,type='l',main='Median Without NA'))
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
+```{r}
 v_activity$day<-'Weekday'
 v_activity[weekdays(v_activity$date,abbreviate=TRUE) %in% c('sáb.','dom.'),]$day<-'Weekend'
 
@@ -64,3 +72,4 @@ par(mfrow = c(2, 2))
 
 with(aggregate(steps2~interval,v_activity[v_activity$day=='Weekday',],mean),plot(interval,steps2,ylim=c(0,200),main='Weekday',type='l'))
 with(aggregate(steps2~interval,v_activity[v_activity$day=='Weekend',],mean),plot(interval,steps2,ylim=c(0,200),main='Weekend',type='l'))
+```
